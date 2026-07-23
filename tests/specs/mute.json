@@ -1,19 +1,17 @@
 [
   {
-    "name": "/mute",
+    "name": "/mute with missing args shows usage",
     "steps": [
       {
+        "send": { "text": "/mute" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Mute a user for a specified duration"
+              "text": "Usage: /mute @username <duration> (e.g. 1h, 30m)"
             }
           }
-        ],
-        "send": {
-          "text": "/mute"
-        }
+        ]
       }
     ]
   }

@@ -1,19 +1,17 @@
 [
   {
-    "name": "/trust",
+    "name": "/trust with missing args shows usage",
     "steps": [
       {
+        "send": { "text": "/trust" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Mark a user as trusted (exempt from auto actions)"
+              "text": "Usage: /trust @username"
             }
           }
-        ],
-        "send": {
-          "text": "/trust"
-        }
+        ]
       }
     ]
   }

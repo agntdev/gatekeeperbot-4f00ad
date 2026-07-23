@@ -1,19 +1,17 @@
 [
   {
-    "name": "/log",
+    "name": "/log with no actions shows empty state",
     "steps": [
       {
+        "send": { "text": "/log" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "View the moderation action log"
+              "text": "📋 No moderation actions yet."
             }
           }
-        ],
-        "send": {
-          "text": "/log"
-        }
+        ]
       }
     ]
   }

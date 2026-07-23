@@ -1,15 +1,31 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
+import { getGroupSettings, setGroupSettings } from "../data.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-
-const composer = new Composer();
+const composer = new Composer<Ctx>();
 
 composer.command("setwelcome", async (ctx) => {
-  await ctx.reply("Set the welcome message for new members");
+  const chatId = String(ctx.chat?.id ?? "");
+  if (!chatId || !ctx.message) return;
+
+  const args = ctx.message.text.split(/\s+/).slice(1);
+  const text = args.join(" ");
+
+  if (!text) {
+    await ctx.reply("Usage: /setwelcome <message text>\n\nUse {username} to mention the new member.", {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+    return;
+  }
+
+  const settings = await getGroupSettings(chatId);
+  settings.welcomeText = text;
+  await setGroupSettings(settings);
+
+  await ctx.reply(`✅ Welcome message updated:\n\n${text}`, {
+    reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+  });
 });
 
 export default composer;

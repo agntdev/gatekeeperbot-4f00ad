@@ -1,19 +1,17 @@
 [
   {
-    "name": "/setpolicy",
+    "name": "/setpolicy with missing args shows usage",
     "steps": [
       {
+        "send": { "text": "/setpolicy" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Configure spam detection thresholds and verification timeout"
+              "text": "Usage: /setpolicy <setting> <value>\n\nSettings:\n• timeout <seconds> — verification timeout (default: 180)\n• retries <count> — max verification attempts (default: 3)\n• flood <count> — messages in 10s to trigger flood (default: 5)\n• repeat <count> — identical messages to trigger repeat (default: 3)"
             }
           }
-        ],
-        "send": {
-          "text": "/setpolicy"
-        }
+        ]
       }
     ]
   }

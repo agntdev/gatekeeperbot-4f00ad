@@ -1,19 +1,17 @@
 [
   {
-    "name": "/setrules",
+    "name": "/setrules with missing args shows usage",
     "steps": [
       {
+        "send": { "text": "/setrules" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Set the group rules message"
+              "text": "Usage: /setrules <rules text>"
             }
           }
-        ],
-        "send": {
-          "text": "/setrules"
-        }
+        ]
       }
     ]
   }

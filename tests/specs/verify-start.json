@@ -5,10 +5,10 @@
       {
         "expect": [
           {
-            "method": "sendMessage",
-            "payload": {
-              "text": "Initiates verification process for new members"
-            }
+            "method": "answerCallbackQuery"
+          },
+          {
+            "method": "sendMessage"
           }
         ],
         "send": {
