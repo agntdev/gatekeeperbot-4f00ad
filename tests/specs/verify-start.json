@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Verify",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Initiates verification process for new members"
+            }
+          }
+        ],
+        "send": {
+          "callback": "verify:start"
+        }
+      }
+    ]
+  }
+]
