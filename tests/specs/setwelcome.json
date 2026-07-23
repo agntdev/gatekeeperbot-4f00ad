@@ -1,19 +1,17 @@
 [
   {
-    "name": "/setwelcome",
+    "name": "/setwelcome with missing args shows usage",
     "steps": [
       {
+        "send": { "text": "/setwelcome" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Set the welcome message for new members"
+              "text": "Usage: /setwelcome <message text>\n\nUse {username} to mention the new member."
             }
           }
-        ],
-        "send": {
-          "text": "/setwelcome"
-        }
+        ]
       }
     ]
   }

@@ -1,19 +1,17 @@
 [
   {
-    "name": "/stats",
+    "name": "/stats with no data shows zeros",
     "steps": [
       {
+        "send": { "text": "/stats" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "View periodic overview stats"
+              "text": "📊 Group stats:\n\n👥 Total members: 0\n✅ Verified: 0\n🛡️ Trusted: 0\n🚫 Banned: 0\n\nModeration:\n⚠️ Warnings: 0\n🔇 Mutes: 0\n👢 Kicks: 0\n🚫 Bans: 0"
             }
           }
-        ],
-        "send": {
-          "text": "/stats"
-        }
+        ]
       }
     ]
   }

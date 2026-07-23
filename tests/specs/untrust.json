@@ -1,19 +1,17 @@
 [
   {
-    "name": "/untrust",
+    "name": "/untrust with missing args shows usage",
     "steps": [
       {
+        "send": { "text": "/untrust" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Remove a user's trusted status"
+              "text": "Usage: /untrust @username"
             }
           }
-        ],
-        "send": {
-          "text": "/untrust"
-        }
+        ]
       }
     ]
   }

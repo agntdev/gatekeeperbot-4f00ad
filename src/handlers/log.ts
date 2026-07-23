@@ -1,15 +1,55 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
+import { getModerationLog } from "../data.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-
-const composer = new Composer();
+const composer = new Composer<Ctx>();
 
 composer.command("log", async (ctx) => {
-  await ctx.reply("View the moderation action log");
+  const chatId = String(ctx.chat?.id ?? "");
+  if (!chatId) return;
+
+  const log = await getModerationLog(chatId);
+  if (log.length === 0) {
+    await ctx.reply("📋 No moderation actions yet.", {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+    return;
+  }
+
+  const recent = log.slice(-10).reverse();
+  const lines = recent.map((action) => {
+    const time = new Date(action.timestamp).toLocaleString();
+    return `• ${action.type.toUpperCase()} @${action.targetUsername ?? "unknown"} by @${action.actorUsername ?? "system"} — ${action.reason} (${time})`;
+  });
+
+  await ctx.reply(`📋 Recent moderation actions:\n\n${lines.join("\n")}`, {
+    reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+  });
+});
+
+composer.callbackQuery("log:show", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const chatId = String(ctx.chat?.id ?? "");
+  if (!chatId) return;
+
+  const log = await getModerationLog(chatId);
+  if (log.length === 0) {
+    await ctx.editMessageText("📋 No moderation actions yet.", {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+    return;
+  }
+
+  const recent = log.slice(-10).reverse();
+  const lines = recent.map((action) => {
+    const time = new Date(action.timestamp).toLocaleString();
+    return `• ${action.type.toUpperCase()} @${action.targetUsername ?? "unknown"} by @${action.actorUsername ?? "system"} — ${action.reason} (${time})`;
+  });
+
+  await ctx.editMessageText(`📋 Recent moderation actions:\n\n${lines.join("\n")}`, {
+    reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+  });
 });
 
 export default composer;

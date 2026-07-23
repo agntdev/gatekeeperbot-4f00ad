@@ -1,19 +1,17 @@
 [
   {
-    "name": "/ban",
+    "name": "/ban with missing args shows usage",
     "steps": [
       {
+        "send": { "text": "/ban" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Ban a user from the group"
+              "text": "Usage: /ban @username [reason]"
             }
           }
-        ],
-        "send": {
-          "text": "/ban"
-        }
+        ]
       }
     ]
   }

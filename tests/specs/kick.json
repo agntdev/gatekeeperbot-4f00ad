@@ -1,19 +1,17 @@
 [
   {
-    "name": "/kick",
+    "name": "/kick with missing args shows usage",
     "steps": [
       {
+        "send": { "text": "/kick" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Kick a user from the group"
+              "text": "Usage: /kick @username [reason]"
             }
           }
-        ],
-        "send": {
-          "text": "/kick"
-        }
+        ]
       }
     ]
   }

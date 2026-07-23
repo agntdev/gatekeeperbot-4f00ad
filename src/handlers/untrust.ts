@@ -1,15 +1,56 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
+import { now } from "../types.js";
+import { getMember, setMember, addModerationAction, getGroupSettings, setGroupSettings } from "../data.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-
-const composer = new Composer();
+const composer = new Composer<Ctx>();
 
 composer.command("untrust", async (ctx) => {
-  await ctx.reply("Remove a user's trusted status");
+  const chatId = String(ctx.chat?.id ?? "");
+  const actorId = String(ctx.from?.id ?? "");
+  if (!chatId || !actorId || !ctx.message) return;
+
+  const args = ctx.message.text.split(/\s+/).slice(1);
+  if (args.length < 1) {
+    await ctx.reply("Usage: /untrust @username", {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+    return;
+  }
+
+  const targetUsername = args[0].replace("@", "");
+
+  const member = await getMember(chatId, targetUsername);
+  if (!member) {
+    await ctx.reply(`Couldn't find @${targetUsername} in this group.`, {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+    return;
+  }
+
+  member.trusted = false;
+  await setMember(member);
+
+  const settings = await getGroupSettings(chatId);
+  settings.trustedUsers = settings.trustedUsers.filter((u) => u !== targetUsername);
+  await setGroupSettings(settings);
+
+  await addModerationAction({
+    id: `${chatId}:${now()}`,
+    chatId,
+    type: "untrust",
+    targetUserId: member.userId,
+    targetUsername,
+    actorUserId: actorId,
+    actorUsername: ctx.from?.username,
+    reason: "Removed trusted status",
+    timestamp: now(),
+  });
+
+  await ctx.reply(`✅ @${targetUsername} is no longer trusted.`, {
+    reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+  });
 });
 
 export default composer;
