@@ -91,6 +91,7 @@ composer.on("message:text", async (ctx, next) => {
   if (!challenge) return next();
 
   const text = ctx.message.text.trim();
+  if (text.startsWith("/")) return next();
   const answer = parseInt(text, 10);
 
   if (isNaN(answer)) {
